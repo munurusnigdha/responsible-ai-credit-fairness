@@ -29,6 +29,11 @@ st.markdown('''<style>
 .notice *{color:#e2f2ff!important}
 [data-baseweb="popover"], [data-baseweb="menu"], [role="option"]{background:#17324b!important;color:#ecf6ff!important}
 [data-testid="stAlert"]{background:#17324b!important;color:#ecf6ff!important}
+
+[data-testid="stAlert"] [data-baseweb="notification"], [data-testid="stAlertContainer"], [data-testid="stAlert"] > div {background:#142d41!important;color:#ecf6ff!important;border-radius:12px}
+[data-testid="stSelectbox"] [data-baseweb="select"] div,[data-testid="stSelectbox"] [data-baseweb="select"] input{background:#17324b!important;color:#ecf6ff!important}
+[data-testid="stSelectbox"] svg{fill:#ecf6ff!important}
+[data-testid="stPlotlyChart"]{padding:16px;background:linear-gradient(145deg,#14283d,#0e1e30);}
 </style>''',unsafe_allow_html=True)
 
 def card(label,value,note):
@@ -38,6 +43,16 @@ def plot(fig,height=320):
     fig.update_layout(height=height,paper_bgcolor=PANEL,plot_bgcolor=PANEL,font=dict(color=WHITE,size=13),margin=dict(l=28,r=20,t=45,b=35),legend=dict(orientation='h',y=1.15,x=0,font=dict(color=MUTED)),hoverlabel=dict(bgcolor='#17324b',font_color=WHITE))
     fig.update_xaxes(showgrid=False,tickfont=dict(color=MUTED),linecolor='#31516b')
     fig.update_yaxes(gridcolor='#28445b',tickfont=dict(color=MUTED),zeroline=False)
+    fig.update_layout(template='plotly_dark', paper_bgcolor=PANEL, plot_bgcolor=PANEL, hovermode='closest', margin=dict(l=35,r=45,t=65,b=55), bargap=.35, bargroupgap=.12)
+    fig.update_xaxes(automargin=True,title_font=dict(color=WHITE),tickfont=dict(color=MUTED))
+    fig.update_yaxes(automargin=True,title_font=dict(color=WHITE),tickfont=dict(color=MUTED))
+    for trace in fig.data:
+        if trace.type == 'bar':
+            horizontal = trace.orientation == 'h'
+            vals = trace.x if horizontal else trace.y
+            if trace.text is None:
+                trace.text = [f'{v:+.1f} pp' if horizontal else f'{v:.1f}%' for v in vals]
+            trace.update(textposition='outside', textfont=dict(color=WHITE,size=14),cliponaxis=False,marker_line_width=1,marker_line_color='#8da9c3')
     st.plotly_chart(fig,use_container_width=True,config={'displayModeBar':False})
 
 @st.cache_resource(show_spinner='Training educational models on the original German Credit dataset…')
@@ -90,9 +105,12 @@ def simulator():
     with right:
         st.markdown('### 02 / Compare model predictions')
         scores = {name: float(model.predict_proba(row)[0,1]) for name, model in models.items()}
-        for name, score in scores.items():
-            card(name, f'{score:.1%}', 'Estimated high-risk probability · newly trained model')
-            st.progress(score)
+        gauges = st.columns(2)
+        for col, (name, score), color in zip(gauges, scores.items(), [TEAL, BLUE]):
+            with col:
+                fig = go.Figure(go.Indicator(mode='gauge+number',value=score*100,number=dict(suffix='%',font=dict(size=32,color=WHITE)),title=dict(text=name,font=dict(size=13,color=WHITE)),gauge=dict(axis=dict(range=[0,100],ticksuffix='%'),bar=dict(color=color),bgcolor='#263e53',borderwidth=0)))
+                plot(fig,240)
+        st.caption('Estimated high-risk probability · newly trained educational models')
         gap = abs(scores['Logistic Regression']-scores['Random Forest'])
         st.write(f'Model probability difference: **{gap*100:.1f} percentage points**.')
     st.divider()
@@ -105,7 +123,7 @@ def simulator():
         p = float(model.predict_proba(alternative)[0,1])
         fig.add_bar(name=name, x=[f'Original: {age} years', f'Comparison: {other_age} years'], y=[scores[name]*100,p*100], marker_color=color, text=[f'{scores[name]:.1%}',f'{p:.1%}'], textposition='auto')
         st.write(f'**{name}:** {(p-scores[name])*100:+.1f} percentage points when age changes.')
-    fig.update_layout(barmode='group', yaxis=dict(range=[0,100],ticksuffix='%'))
+    fig.update_layout(title='Same profile, different age',barmode='group', yaxis=dict(range=[0,110],ticksuffix='%',title='Estimated high-risk probability'))
     plot(fig)
     st.markdown('### 04 / Explore what changes the prediction')
     st.caption('One-feature sensitivity, not SHAP or causal attribution. Each comparison changes only the indicated input.')
@@ -115,11 +133,16 @@ def simulator():
     for feature, label, value in [('age','Age: +10 years',min(75,age+10)),('credit_amount','Amount: +1,000 DM',min(20000,amount+1000)),('duration','Duration: +12 months',min(72,duration+12))]:
         scenario = row.copy()
         scenario.loc[:,feature] = value
-        changes.append((label, (float(model.predict_proba(scenario)[0,1])-scores[model_name])*100))
+        changes.append((f'{feature.replace(chr(95), chr(32)).title()}: {row.iloc[0][feature]} → {value}', (float(model.predict_proba(scenario)[0,1])-scores[model_name])*100))
     fig = go.Figure(go.Bar(y=[x[0] for x in changes],x=[x[1] for x in changes],orientation='h',marker_color=[TEAL if x[1]<0 else BLUE for x in changes]))
-    fig.update_layout(xaxis_title='Change in estimated risk (percentage points)')
-    plot(fig,260)
-    st.info('These models are newly fitted using OpenML German Credit data (ID 31), an 80/20 stratified split, seed 42, and all 20 features. They are not the original notebook models. Probabilities are not validated for real lending. Age sensitivity does not establish discrimination; edited profiles may be unrealistic.')
+    extent = max(1, max(abs(v) for _,v in changes))*1.45
+    fig.update_layout(title='Which input shifts the risk estimate?',xaxis=dict(title='Change in estimated risk (percentage points)',range=[-extent,extent],showgrid=True,gridcolor='#28445b'),yaxis=dict(autorange='reversed'))
+    fig.add_vline(x=0,line_color='#b5cbdc',line_width=1)
+    plot(fig,340)
+    label, delta = max(changes,key=lambda item:abs(item[1]))
+    direction = 'increases' if delta > 0 else 'decreases' if delta < 0 else 'does not change'
+    st.markdown(f'<div class="notice"><b>Largest change in this scenario</b><br>{label} {direction} estimated risk by {abs(delta):.1f} percentage points. Teal indicates a decrease; blue indicates an increase or no change. This is a local model sensitivity result, not a causal effect.</div>',unsafe_allow_html=True)
+    st.markdown('<div class="notice"><b>Simulation methodology & limitations</b><br>These models are newly fitted using OpenML German Credit data (ID 31), an 80/20 stratified split, seed 42, and all 20 features. They are not the original notebook models. Probabilities are not validated for real lending. Age sensitivity does not establish discrimination; edited profiles may be unrealistic.</div>',unsafe_allow_html=True)
 
 
 with st.sidebar:
