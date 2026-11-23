@@ -2,48 +2,31 @@ import streamlit as st
 import plotly.graph_objects as go
 
 st.set_page_config(page_title='Responsible AI | Research Dashboard', page_icon='📊', layout='wide')
-BG='#07111f'; PANEL='#11243a'; TEAL='#24d2c1'; BLUE='#6798ff'; WHITE='#ecf6ff'; MUTED='#b5cbdc'
-st.markdown('''<style>
-:root{color-scheme:dark}
-.stApp,[data-testid="stAppViewContainer"],[data-testid="stMain"]{background:#07111f!important;color:#ecf6ff!important}
-[data-testid="stSidebar"],[data-testid="stSidebarContent"]{background:#102036!important;border-right:1px solid #31516b!important}
-[data-testid="stHeader"]{background:transparent!important}
-.block-container{padding-top:2rem!important;max-width:1400px!important}
-.stApp p,.stApp span,.stApp label,.stApp h1,.stApp h2,.stApp h3,[data-testid="stSidebar"] p,[data-testid="stSidebar"] span,[data-testid="stSidebar"] label{color:#ecf6ff!important}
-[data-testid="stSidebar"] a,.stApp a{color:#6ce6dc!important}
-[data-testid="stSidebar"] [role="radiogroup"] label{padding:9px 12px;border-radius:9px}
-[data-testid="stSidebar"] [role="radiogroup"] label:hover{background:#1b3b54}
-[data-testid="stSelectbox"] div[data-baseweb="select"]>div{background:#17324b!important;color:#ecf6ff!important}
-[data-testid="stPlotlyChart"]{background:#11243a;border:1px solid #2a4a65;border-radius:17px;padding:10px}
-.hero{background:linear-gradient(110deg,#183a55,#0b192b 75%);border:1px solid #31516b;border-radius:20px;padding:32px;margin-bottom:22px}
-.hero .eyebrow{color:#57e6d9!important;font-size:.75rem;letter-spacing:.15em;font-weight:800}
-.hero .headline{color:#f0f8ff!important;font-size:2.6rem;font-weight:800;line-height:1.14;letter-spacing:-.04em;margin:12px 0}
-.hero .sub{color:#c0d5e4!important;max-width:800px;line-height:1.6}
-.hero .status{display:inline-block;color:#91f2e9!important;background:#17414a;border:1px solid #33727b;border-radius:30px;padding:7px 13px;margin-top:15px;font-size:.78rem}
-.kpi{background:linear-gradient(140deg,#17324b,#11243a);border:1px solid #31516b;border-radius:16px;padding:20px 22px;min-height:132px;margin-bottom:14px}
-.kpi .label{color:#b5cbdc!important;font-size:.8rem;font-weight:650}
-.kpi .value{color:#f0f8ff!important;font-size:2.2rem;font-weight:800;margin:8px 0 3px}
-.kpi .note{color:#64e3d8!important;font-size:.76rem}
-.section{font-size:1.2rem;color:#f0f8ff!important;font-weight:750;margin:22px 0 12px}
-.notice{background:#142d41;border-left:4px solid #24d2c1;padding:16px 19px;border-radius:0 12px 12px 0;color:#e2f2ff!important;line-height:1.65;margin:15px 0}
-.notice *{color:#e2f2ff!important}
-[data-baseweb="popover"], [data-baseweb="menu"], [role="option"]{background:#17324b!important;color:#ecf6ff!important}
-[data-testid="stAlert"]{background:#17324b!important;color:#ecf6ff!important}
-
-[data-testid="stAlert"] [data-baseweb="notification"], [data-testid="stAlertContainer"], [data-testid="stAlert"] > div {background:#142d41!important;color:#ecf6ff!important;border-radius:12px}
-[data-testid="stSelectbox"] [data-baseweb="select"] div,[data-testid="stSelectbox"] [data-baseweb="select"] input{background:#17324b!important;color:#ecf6ff!important}
-[data-testid="stSelectbox"] svg{fill:#ecf6ff!important}
-[data-testid="stPlotlyChart"]{padding:16px;background:linear-gradient(145deg,#14283d,#0e1e30);}
-</style>''',unsafe_allow_html=True)
+BG='#f5f7fb'; PANEL='#ffffff'; TEAL='#087f78'; BLUE='#345bc4'; WHITE='#17263c'; MUTED='#52647b'
+st.markdown("""<style>
+.block-container{padding-top:2rem;max-width:1400px}
+.hero{background:#eaf1fb;color:#17263c;border:1px solid #cbd9eb;border-radius:18px;padding:30px;margin-bottom:20px}
+.hero .eyebrow{color:#087f78;font-size:.75rem;letter-spacing:.12em;font-weight:800}
+.hero .headline{font-size:2.4rem;font-weight:800;line-height:1.15;margin:12px 0}
+.hero .sub{color:#40536b;line-height:1.6}
+.hero .status{color:#087f78;font-size:.8rem;margin-top:14px}
+.kpi{background:#fff;color:#17263c;border:1px solid #d5deea;border-radius:14px;padding:20px;min-height:132px;margin-bottom:14px}
+.kpi .label{color:#52647b;font-size:.8rem;font-weight:650}
+.kpi .value{font-size:2.1rem;font-weight:800;margin:8px 0}
+.kpi .note{color:#087f78;font-size:.8rem}
+.section{font-size:1.2rem;font-weight:750;margin:22px 0 12px}
+.notice{background:#eaf4f3;color:#173b42;border-left:4px solid #087f78;padding:16px 19px;border-radius:0 12px 12px 0;line-height:1.65;margin:15px 0}
+[data-testid="stPlotlyChart"]{border:1px solid #d5deea;border-radius:14px;padding:10px;background:#fff}
+</style>""",unsafe_allow_html=True)
 
 def card(label,value,note):
     st.markdown(f'<div class="kpi"><div class="label">{label}</div><div class="value">{value}</div><div class="note">{note}</div></div>',unsafe_allow_html=True)
 
 def plot(fig,height=320):
-    fig.update_layout(height=height,paper_bgcolor=PANEL,plot_bgcolor=PANEL,font=dict(color=WHITE,size=13),margin=dict(l=28,r=20,t=45,b=35),legend=dict(orientation='h',y=1.15,x=0,font=dict(color=MUTED)),hoverlabel=dict(bgcolor='#17324b',font_color=WHITE))
-    fig.update_xaxes(showgrid=False,tickfont=dict(color=MUTED),linecolor='#31516b')
-    fig.update_yaxes(gridcolor='#28445b',tickfont=dict(color=MUTED),zeroline=False)
-    fig.update_layout(template='plotly_dark', paper_bgcolor=PANEL, plot_bgcolor=PANEL, hovermode='closest', margin=dict(l=35,r=45,t=65,b=55), bargap=.35, bargroupgap=.12)
+    fig.update_layout(height=height,paper_bgcolor=PANEL,plot_bgcolor=PANEL,font=dict(color=WHITE,size=13),margin=dict(l=28,r=20,t=45,b=35),legend=dict(orientation='h',y=1.15,x=0,font=dict(color=MUTED)),hoverlabel=dict(bgcolor='#ffffff',font_color=WHITE))
+    fig.update_xaxes(showgrid=False,tickfont=dict(color=MUTED),linecolor='#cbd5e1')
+    fig.update_yaxes(gridcolor='#e2e8f0',tickfont=dict(color=MUTED),zeroline=False)
+    fig.update_layout(template='plotly_white', paper_bgcolor=PANEL, plot_bgcolor=PANEL, hovermode='closest', margin=dict(l=35,r=45,t=65,b=55), bargap=.35, bargroupgap=.12)
     fig.update_xaxes(automargin=True,title_font=dict(color=WHITE),tickfont=dict(color=MUTED))
     fig.update_yaxes(automargin=True,title_font=dict(color=WHITE),tickfont=dict(color=MUTED))
     for trace in fig.data:
@@ -52,8 +35,8 @@ def plot(fig,height=320):
             vals = trace.x if horizontal else trace.y
             if trace.text is None:
                 trace.text = [f'{v:+.1f} pp' if horizontal else f'{v:.1f}%' for v in vals]
-            trace.update(textposition='outside', textfont=dict(color=WHITE,size=14),cliponaxis=False,marker_line_width=1,marker_line_color='#8da9c3')
-    st.plotly_chart(fig,use_container_width=True,config={'displayModeBar':False})
+            trace.update(textposition='outside', textfont=dict(color=WHITE,size=14),cliponaxis=False,marker_line_width=1,marker_line_color='#cbd5e1')
+    st.plotly_chart(fig,theme=None,use_container_width=True,config={'displayModeBar':False})
 
 @st.cache_resource(show_spinner='Training educational models on the original German Credit dataset…')
 def train_simulator():
@@ -108,7 +91,7 @@ def simulator():
         gauges = st.columns(2)
         for col, (name, score), color in zip(gauges, scores.items(), [TEAL, BLUE]):
             with col:
-                fig = go.Figure(go.Indicator(mode='gauge+number',value=score*100,number=dict(suffix='%',font=dict(size=32,color=WHITE)),title=dict(text=name,font=dict(size=13,color=WHITE)),gauge=dict(axis=dict(range=[0,100],ticksuffix='%'),bar=dict(color=color),bgcolor='#263e53',borderwidth=0)))
+                fig = go.Figure(go.Indicator(mode='gauge+number',value=score*100,number=dict(suffix='%',font=dict(size=32,color=WHITE)),title=dict(text=name,font=dict(size=13,color=WHITE)),gauge=dict(axis=dict(range=[0,100],ticksuffix='%'),bar=dict(color=color),bgcolor='#e2e8f0',borderwidth=0)))
                 plot(fig,240)
         st.caption('Estimated high-risk probability · newly trained educational models')
         gap = abs(scores['Logistic Regression']-scores['Random Forest'])
@@ -136,8 +119,8 @@ def simulator():
         changes.append((f'{feature.replace(chr(95), chr(32)).title()}: {row.iloc[0][feature]} → {value}', (float(model.predict_proba(scenario)[0,1])-scores[model_name])*100))
     fig = go.Figure(go.Bar(y=[x[0] for x in changes],x=[x[1] for x in changes],orientation='h',marker_color=[TEAL if x[1]<0 else BLUE for x in changes]))
     extent = max(1, max(abs(v) for _,v in changes))*1.45
-    fig.update_layout(title='Which input shifts the risk estimate?',xaxis=dict(title='Change in estimated risk (percentage points)',range=[-extent,extent],showgrid=True,gridcolor='#28445b'),yaxis=dict(autorange='reversed'))
-    fig.add_vline(x=0,line_color='#b5cbdc',line_width=1)
+    fig.update_layout(title='Which input shifts the risk estimate?',xaxis=dict(title='Change in estimated risk (percentage points)',range=[-extent,extent],showgrid=True,gridcolor='#e2e8f0'),yaxis=dict(autorange='reversed'))
+    fig.add_vline(x=0,line_color='#64748b',line_width=1)
     plot(fig,340)
     label, delta = max(changes,key=lambda item:abs(item[1]))
     direction = 'increases' if delta > 0 else 'decreases' if delta < 0 else 'does not change'
@@ -172,7 +155,7 @@ elif page=='Overview':
         fig.update_layout(barmode='group',yaxis=dict(range=[0,100],ticksuffix='%'))
         plot(fig)
     with b:
-        fig=go.Figure(go.Indicator(mode='gauge+number',value=80.4048,number={'suffix':'%','font':{'color':WHITE,'size':40}},title={'text':'BEST ROC AUC','font':{'color':MUTED}},gauge={'axis':{'range':[0,100],'tickcolor':MUTED},'bar':{'color':TEAL},'bgcolor':PANEL,'steps':[{'range':[0,60],'color':'#1d364b'},{'range':[60,100],'color':'#20515c'}]}))
+        fig=go.Figure(go.Indicator(mode='gauge+number',value=80.4048,number={'suffix':'%','font':{'color':WHITE,'size':40}},title={'text':'BEST ROC AUC','font':{'color':MUTED}},gauge={'axis':{'range':[0,100],'tickcolor':MUTED},'bar':{'color':TEAL},'bgcolor':PANEL,'steps':[{'range':[0,60],'color':'#e2e8f0'},{'range':[60,100],'color':'#cce9e5'}]}))
         plot(fig)
     st.markdown('<div class="section">Fairness snapshot</div>',unsafe_allow_html=True)
     a,b=st.columns([1.5,1])
