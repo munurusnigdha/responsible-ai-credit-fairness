@@ -27,6 +27,8 @@ st.markdown('''<style>
 .section{font-size:1.2rem;color:#f0f8ff!important;font-weight:750;margin:22px 0 12px}
 .notice{background:#142d41;border-left:4px solid #24d2c1;padding:16px 19px;border-radius:0 12px 12px 0;color:#e2f2ff!important;line-height:1.65;margin:15px 0}
 .notice *{color:#e2f2ff!important}
+[data-baseweb="popover"], [data-baseweb="menu"], [role="option"]{background:#17324b!important;color:#ecf6ff!important}
+[data-testid="stAlert"]{background:#17324b!important;color:#ecf6ff!important}
 </style>''',unsafe_allow_html=True)
 
 def card(label,value,note):
@@ -38,19 +40,103 @@ def plot(fig,height=320):
     fig.update_yaxes(gridcolor='#28445b',tickfont=dict(color=MUTED),zeroline=False)
     st.plotly_chart(fig,use_container_width=True,config={'displayModeBar':False})
 
+@st.cache_resource(show_spinner='Training educational models on the original German Credit dataset…')
+def train_simulator():
+    import pandas as pd
+    from sklearn.datasets import fetch_openml
+    from sklearn.model_selection import train_test_split
+    from sklearn.compose import ColumnTransformer
+    from sklearn.preprocessing import OneHotEncoder, StandardScaler
+    from sklearn.pipeline import make_pipeline
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.ensemble import RandomForestClassifier
+    data = fetch_openml(data_id=31, as_frame=True)
+    X = data.data.copy()
+    y = (data.target.astype(str) == 'bad').astype(int)
+    if len(X) != 1000 or y.nunique() != 2:
+        raise ValueError('Unexpected dataset format')
+    train, test, yt, yv = train_test_split(X, y, test_size=.2, random_state=42, stratify=y)
+    numeric = list(X.select_dtypes(include='number').columns)
+    categorical = [c for c in X.columns if c not in numeric]
+    models = {}
+    for name, estimator in [('Logistic Regression', LogisticRegression(max_iter=2000)), ('Random Forest', RandomForestClassifier(n_estimators=200, random_state=42, n_jobs=2))]:
+        prep = ColumnTransformer([('numeric', StandardScaler(), numeric), ('category', OneHotEncoder(handle_unknown='ignore'), categorical)])
+        models[name] = make_pipeline(prep, estimator).fit(train, yt)
+    return models, test.reset_index(drop=True)
+
+def simulator():
+    st.subheader('Would changing one detail change the AI prediction?')
+    st.caption('Educational simulation only · fictional scenarios · not a lending decision tool')
+    st.write('Compare two machine learning models, then change only the age of a reference profile to investigate model sensitivity.')
+    try:
+        models, reference = train_simulator()
+    except Exception as exc:
+        st.error('The public dataset could not be loaded or the models could not be trained. Try again later. The original research pages remain available.')
+        st.caption(str(exc))
+        return
+    left, right = st.columns([1, 1.2])
+    with left:
+        st.markdown('### 01 / Build a scenario')
+        profile = st.selectbox('Historical reference profile (other features held fixed)', list(range(10)), format_func=lambda i: f'Profile {i+1}')
+        row = reference.iloc[[profile]].copy()
+        age = st.slider('Age (years)', 19, 75, int(row.iloc[0]['age']), key=f'age{profile}')
+        amount = st.slider('Credit amount (historical Deutsche Mark)', 250, 20000, int(row.iloc[0]['credit_amount']), key=f'amount{profile}')
+        duration = st.slider('Duration (months)', 4, 72, int(row.iloc[0]['duration']), key=f'duration{profile}')
+        row.loc[:, 'age'] = age
+        row.loc[:, 'credit_amount'] = amount
+        row.loc[:, 'duration'] = duration
+        with st.expander('Inspect all 20 model inputs'):
+            st.dataframe(row.T.rename(columns={profile:'Value'}).astype(str), use_container_width=True)
+    with right:
+        st.markdown('### 02 / Compare model predictions')
+        scores = {name: float(model.predict_proba(row)[0,1]) for name, model in models.items()}
+        for name, score in scores.items():
+            card(name, f'{score:.1%}', 'Estimated high-risk probability · newly trained model')
+            st.progress(score)
+        gap = abs(scores['Logistic Regression']-scores['Random Forest'])
+        st.write(f'Model probability difference: **{gap*100:.1f} percentage points**.')
+    st.divider()
+    st.markdown('### 03 / Age-only fairness experiment')
+    other_age = st.slider('Comparison age (all other inputs unchanged)', 19, 75, 45)
+    alternative = row.copy()
+    alternative.loc[:, 'age'] = other_age
+    fig = go.Figure()
+    for (name, model), color in zip(models.items(), [TEAL, BLUE]):
+        p = float(model.predict_proba(alternative)[0,1])
+        fig.add_bar(name=name, x=[f'Original: {age} years', f'Comparison: {other_age} years'], y=[scores[name]*100,p*100], marker_color=color, text=[f'{scores[name]:.1%}',f'{p:.1%}'], textposition='auto')
+        st.write(f'**{name}:** {(p-scores[name])*100:+.1f} percentage points when age changes.')
+    fig.update_layout(barmode='group', yaxis=dict(range=[0,100],ticksuffix='%'))
+    plot(fig)
+    st.markdown('### 04 / Explore what changes the prediction')
+    st.caption('One-feature sensitivity, not SHAP or causal attribution. Each comparison changes only the indicated input.')
+    model_name = st.selectbox('Model to inspect', list(models))
+    model = models[model_name]
+    changes = []
+    for feature, label, value in [('age','Age: +10 years',min(75,age+10)),('credit_amount','Amount: +1,000 DM',min(20000,amount+1000)),('duration','Duration: +12 months',min(72,duration+12))]:
+        scenario = row.copy()
+        scenario.loc[:,feature] = value
+        changes.append((label, (float(model.predict_proba(scenario)[0,1])-scores[model_name])*100))
+    fig = go.Figure(go.Bar(y=[x[0] for x in changes],x=[x[1] for x in changes],orientation='h',marker_color=[TEAL if x[1]<0 else BLUE for x in changes]))
+    fig.update_layout(xaxis_title='Change in estimated risk (percentage points)')
+    plot(fig,260)
+    st.info('These models are newly fitted using OpenML German Credit data (ID 31), an 80/20 stratified split, seed 42, and all 20 features. They are not the original notebook models. Probabilities are not validated for real lending. Age sensitivity does not establish discrimination; edited profiles may be unrealistic.')
+
+
 with st.sidebar:
     st.markdown('**◈ RESEARCH LAB**')
     st.markdown('### Credit Risk & Fairness')
     st.caption('INTERACTIVE RESEARCH EXPLORER')
     st.divider()
-    page=st.radio('Explore research',['Overview','Model performance','Fairness assessment','Methods & limitations'])
+    page=st.radio('Explore research',['Credit simulator','Overview','Model performance','Fairness assessment','Methods & limitations'])
     st.divider()
     st.markdown('[Original UCI dataset](https://archive.ics.uci.edu/dataset/144/statlog+german+credit+data)')
     st.markdown('[Research repository](https://github.com/munurusnigdha/responsible-ai-credit-fairness)')
 
 st.markdown('''<div class="hero"><div class="eyebrow">DATA SCIENCE / RESPONSIBLE AI / RESEARCH</div><div class="headline">Responsible AI in<br>Financial Decision-Making</div><div class="sub">Explore credit-risk prediction, model performance and age-group fairness using the UCI German Credit dataset.</div><div class="status">● Published research summary</div></div>''',unsafe_allow_html=True)
 
-if page=='Overview':
+if page=='Credit simulator':
+    simulator()
+elif page=='Overview':
     cols=st.columns(4)
     for col,items in zip(cols,[('DATASET RECORDS','1,000','20 features'),('TEST CASES','200','Held-out evaluation'),('BEST ACCURACY','78%','Logistic Regression'),('BEST ROC AUC','0.804','Logistic Regression')]):
         with col:card(*items)
