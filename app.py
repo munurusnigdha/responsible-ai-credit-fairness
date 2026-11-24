@@ -7,14 +7,15 @@ st.markdown("""<style>
 .block-container{padding-top:2rem;max-width:1400px}
 .hero{background:#eaf1fb;color:#17263c;border:1px solid #cbd9eb;border-radius:18px;padding:30px;margin-bottom:20px}
 .hero .eyebrow{color:#087f78;font-size:.75rem;letter-spacing:.12em;font-weight:800}
-.hero .headline{font-size:2.4rem;font-weight:800;line-height:1.15;margin:12px 0}
+.hero .headline{color:#17263c!important;font-size:2.4rem;font-weight:800;line-height:1.15;margin:12px 0}
 .hero .sub{color:#40536b;line-height:1.6}
 .hero .status{color:#087f78;font-size:.8rem;margin-top:14px}
 .kpi{background:#fff;color:#17263c;border:1px solid #d5deea;border-radius:14px;padding:20px;min-height:132px;margin-bottom:14px}
 .kpi .label{color:#52647b;font-size:.8rem;font-weight:650}
-.kpi .value{font-size:2.1rem;font-weight:800;margin:8px 0}
+.kpi .value{color:#17263c!important;font-size:2.1rem;font-weight:800;margin:8px 0}
 .kpi .note{color:#087f78;font-size:.8rem}
 .section{font-size:1.2rem;font-weight:750;margin:22px 0 12px}
+.notice p,.notice b{color:#173b42!important}
 .notice{background:#eaf4f3;color:#173b42;border-left:4px solid #087f78;padding:16px 19px;border-radius:0 12px 12px 0;line-height:1.65;margin:15px 0}
 [data-testid="stPlotlyChart"]{border:1px solid #d5deea;border-radius:14px;padding:10px;background:#fff}
 </style>""",unsafe_allow_html=True)
@@ -64,8 +65,8 @@ def train_simulator():
 
 def simulator():
     st.subheader('Would changing one detail change the AI prediction?')
-    st.caption('Educational simulation only · fictional scenarios · not a lending decision tool')
-    st.write('Compare two machine learning models, then change only the age of a reference profile to investigate model sensitivity.')
+    st.caption('Educational simulation only · edited historical scenario · not a lending decision tool')
+    st.write('Compare two machine learning models, then change only the applicant age to investigate model sensitivity.')
     try:
         models, reference = train_simulator()
     except Exception as exc:
@@ -75,16 +76,18 @@ def simulator():
     left, right = st.columns([1, 1.2])
     with left:
         st.markdown('### 01 / Build a scenario')
-        profile = st.selectbox('Historical reference profile (other features held fixed)', list(range(10)), format_func=lambda i: f'Profile {i+1}')
+        # Fixed, reproducible historical baseline; all remaining inputs are disclosed.
+        profile = 0
         row = reference.iloc[[profile]].copy()
-        age = st.slider('Age (years)', 19, 75, int(row.iloc[0]['age']), key=f'age{profile}')
-        amount = st.slider('Credit amount (historical Deutsche Mark)', 250, 20000, int(row.iloc[0]['credit_amount']), key=f'amount{profile}')
-        duration = st.slider('Duration (months)', 4, 72, int(row.iloc[0]['duration']), key=f'duration{profile}')
+        st.caption('Start with one fixed historical applicant. Edit the three inputs below; the other 17 attributes remain unchanged.')
+        age = st.slider('Applicant age (years)', 19, 75, int(row.iloc[0]['age']))
+        amount = st.slider('Requested credit (historical Deutsche Mark)', 250, 20000, int(row.iloc[0]['credit_amount']))
+        duration = st.slider('Repayment period (months)', 4, 72, int(row.iloc[0]['duration']))
         row.loc[:, 'age'] = age
         row.loc[:, 'credit_amount'] = amount
         row.loc[:, 'duration'] = duration
-        with st.expander('Inspect all 20 model inputs'):
-            st.dataframe(row.T.rename(columns={profile:'Value'}).astype(str), use_container_width=True)
+        with st.expander('View the 17 fixed applicant attributes'):
+            st.dataframe(row.drop(columns=['age','credit_amount','duration']).T.rename(columns={profile:'Value'}).astype(str), use_container_width=True)
     with right:
         st.markdown('### 02 / Compare model predictions')
         scores = {name: float(model.predict_proba(row)[0,1]) for name, model in models.items()}
@@ -106,7 +109,7 @@ def simulator():
         p = float(model.predict_proba(alternative)[0,1])
         fig.add_bar(name=name, x=[f'Original: {age} years', f'Comparison: {other_age} years'], y=[scores[name]*100,p*100], marker_color=color, text=[f'{scores[name]:.1%}',f'{p:.1%}'], textposition='auto')
         st.write(f'**{name}:** {(p-scores[name])*100:+.1f} percentage points when age changes.')
-    fig.update_layout(title='Same profile, different age',barmode='group', yaxis=dict(range=[0,110],ticksuffix='%',title='Estimated high-risk probability'))
+    fig.update_layout(title='Same applicant, different age',barmode='group', yaxis=dict(range=[0,110],ticksuffix='%',title='Estimated high-risk probability'))
     plot(fig)
     st.markdown('### 04 / Explore what changes the prediction')
     st.caption('One-feature sensitivity, not SHAP or causal attribution. Each comparison changes only the indicated input.')
@@ -138,7 +141,7 @@ with st.sidebar:
     st.markdown('[Original UCI dataset](https://archive.ics.uci.edu/dataset/144/statlog+german+credit+data)')
     st.markdown('[Research repository](https://github.com/munurusnigdha/responsible-ai-credit-fairness)')
 
-st.markdown('''<div class="hero"><div class="eyebrow">DATA SCIENCE / RESPONSIBLE AI / RESEARCH</div><div class="headline">Responsible AI in<br>Financial Decision-Making</div><div class="sub">Explore credit-risk prediction, model performance and age-group fairness using the UCI German Credit dataset.</div><div class="status">● Published research summary</div></div>''',unsafe_allow_html=True)
+st.markdown('''<div class="hero"><div class="eyebrow">DATA SCIENCE / RESPONSIBLE AI / RESEARCH</div><div class="headline">Responsible AI in<br>Financial Decision-Making</div><div class="sub">Explore credit-risk prediction, model performance and age-group fairness using the UCI German Credit dataset.</div><div class="status">Exploratory research</div></div>''',unsafe_allow_html=True)
 
 if page=='Credit simulator':
     simulator()
