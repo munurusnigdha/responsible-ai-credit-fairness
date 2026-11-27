@@ -1,0 +1,795 @@
+{
+  "total": 210643,
+  "action_counts": {
+    "1": 111655,
+    "3": 33902,
+    "6": 27403,
+    "4": 22534,
+    "5": 10134,
+    "2": 4092,
+    "8": 648,
+    "7": 275
+  },
+  "eligible": 149649,
+  "train": 119719,
+  "test": 29930,
+  "denial_rate": 0.22654344499462076,
+  "missing": {
+    "loan_amount": 0,
+    "income": 5911,
+    "property_value": 11037,
+    "loan_type": 0,
+    "loan_purpose": 0,
+    "occupancy_type": 0,
+    "lien_status": 0,
+    "construction_method": 0
+  },
+  "models": [
+    {
+      "model": "Majority baseline",
+      "accuracy": 0.7734714333444704,
+      "balanced_accuracy": 0.5,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "auc": 0.5,
+      "fit_seconds": 0.32901445499999227,
+      "predict_seconds": 0.07427412200001982
+    },
+    {
+      "model": "Logistic Regression",
+      "accuracy": 0.7742398930838623,
+      "balanced_accuracy": 0.5048250476245086,
+      "precision": 0.5804195804195804,
+      "recall": 0.01224188790560472,
+      "f1": 0.023978044200491117,
+      "auc": 0.7240356498913715,
+      "fit_seconds": 0.4676369449999811,
+      "predict_seconds": 0.06101359000001594
+    },
+    {
+      "model": "Random Forest",
+      "accuracy": 0.802439024390244,
+      "balanced_accuracy": 0.5902206655325981,
+      "precision": 0.7312,
+      "recall": 0.20221238938053096,
+      "f1": 0.3168110918544194,
+      "auc": 0.7816342405881866,
+      "fit_seconds": 1.329162507000035,
+      "predict_seconds": 0.10243696200001295
+    },
+    {
+      "model": "Gradient Boosting",
+      "accuracy": 0.8136986301369863,
+      "balanced_accuracy": 0.6265457418273794,
+      "precision": 0.726998491704374,
+      "recall": 0.2843657817109145,
+      "f1": 0.40882103477523324,
+      "auc": 0.7977376096637931,
+      "fit_seconds": 1.8146896000000083,
+      "predict_seconds": 0.13435960900000055
+    }
+  ],
+  "fairness": [
+    {
+      "model": "Majority baseline",
+      "attribute": "derived_race",
+      "group": "American Indian or Alaska Native",
+      "n": 120,
+      "observed_denial": 0.3416666666666667,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Majority baseline",
+      "attribute": "derived_race",
+      "group": "Asian",
+      "n": 2074,
+      "observed_denial": 0.2107039537126326,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Majority baseline",
+      "attribute": "derived_race",
+      "group": "Black or African American",
+      "n": 1873,
+      "observed_denial": 0.3758675920982381,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Majority baseline",
+      "attribute": "derived_race",
+      "group": "Joint",
+      "n": 654,
+      "observed_denial": 0.18654434250764526,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Majority baseline",
+      "attribute": "derived_race",
+      "group": "Race Not Available",
+      "n": 5269,
+      "observed_denial": 0.2224330992598216,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Majority baseline",
+      "attribute": "derived_race",
+      "group": "White",
+      "n": 19807,
+      "observed_denial": 0.21386378553036806,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Majority baseline",
+      "attribute": "derived_sex",
+      "group": "Female",
+      "n": 6860,
+      "observed_denial": 0.2779883381924198,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Majority baseline",
+      "attribute": "derived_sex",
+      "group": "Joint",
+      "n": 11084,
+      "observed_denial": 0.15896788163118009,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Majority baseline",
+      "attribute": "derived_sex",
+      "group": "Male",
+      "n": 9142,
+      "observed_denial": 0.28101071975497705,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Majority baseline",
+      "attribute": "derived_sex",
+      "group": "Sex Not Available",
+      "n": 2844,
+      "observed_denial": 0.19057665260196907,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Majority baseline",
+      "attribute": "applicant_age",
+      "group": "25-34",
+      "n": 5596,
+      "observed_denial": 0.16190135811293782,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Majority baseline",
+      "attribute": "applicant_age",
+      "group": "35-44",
+      "n": 7387,
+      "observed_denial": 0.2207932855015568,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Majority baseline",
+      "attribute": "applicant_age",
+      "group": "45-54",
+      "n": 6352,
+      "observed_denial": 0.24763853904282115,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Majority baseline",
+      "attribute": "applicant_age",
+      "group": "55-64",
+      "n": 5330,
+      "observed_denial": 0.2579737335834897,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Majority baseline",
+      "attribute": "applicant_age",
+      "group": "65-74",
+      "n": 2923,
+      "observed_denial": 0.27471775573041396,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Majority baseline",
+      "attribute": "applicant_age",
+      "group": "8888",
+      "n": 815,
+      "observed_denial": 0.08957055214723926,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Majority baseline",
+      "attribute": "applicant_age",
+      "group": "<25",
+      "n": 408,
+      "observed_denial": 0.16176470588235295,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Majority baseline",
+      "attribute": "applicant_age",
+      "group": ">74",
+      "n": 1119,
+      "observed_denial": 0.3154602323503128,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Logistic Regression",
+      "attribute": "derived_race",
+      "group": "American Indian or Alaska Native",
+      "n": 120,
+      "observed_denial": 0.3416666666666667,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Logistic Regression",
+      "attribute": "derived_race",
+      "group": "Asian",
+      "n": 2074,
+      "observed_denial": 0.2107039537126326,
+      "predicted_denial": 0.0033751205400192863,
+      "fpr": 0.0006108735491753207,
+      "tpr": 0.013729977116704805
+    },
+    {
+      "model": "Logistic Regression",
+      "attribute": "derived_race",
+      "group": "Black or African American",
+      "n": 1873,
+      "observed_denial": 0.3758675920982381,
+      "predicted_denial": 0.004805125467164976,
+      "fpr": 0.000855431993156544,
+      "tpr": 0.011363636363636364
+    },
+    {
+      "model": "Logistic Regression",
+      "attribute": "derived_race",
+      "group": "Joint",
+      "n": 654,
+      "observed_denial": 0.18654434250764526,
+      "predicted_denial": 0.0015290519877675841,
+      "fpr": 0.0,
+      "tpr": 0.00819672131147541
+    },
+    {
+      "model": "Logistic Regression",
+      "attribute": "derived_race",
+      "group": "Race Not Available",
+      "n": 5269,
+      "observed_denial": 0.2224330992598216,
+      "predicted_denial": 0.004934522679825394,
+      "fpr": 0.00244081034903588,
+      "tpr": 0.013651877133105802
+    },
+    {
+      "model": "Logistic Regression",
+      "attribute": "derived_race",
+      "group": "White",
+      "n": 19807,
+      "observed_denial": 0.21386378553036806,
+      "predicted_denial": 0.005048720149442116,
+      "fpr": 0.003082653651017918,
+      "tpr": 0.012275731822474031
+    },
+    {
+      "model": "Logistic Regression",
+      "attribute": "derived_sex",
+      "group": "Female",
+      "n": 6860,
+      "observed_denial": 0.2779883381924198,
+      "predicted_denial": 0.007142857142857143,
+      "fpr": 0.004239854633555421,
+      "tpr": 0.014682747771368642
+    },
+    {
+      "model": "Logistic Regression",
+      "attribute": "derived_sex",
+      "group": "Joint",
+      "n": 11084,
+      "observed_denial": 0.15896788163118009,
+      "predicted_denial": 0.0027066041140382533,
+      "fpr": 0.0015018236429950654,
+      "tpr": 0.009080590238365494
+    },
+    {
+      "model": "Logistic Regression",
+      "attribute": "derived_sex",
+      "group": "Male",
+      "n": 9142,
+      "observed_denial": 0.28101071975497705,
+      "predicted_denial": 0.00514110697877926,
+      "fpr": 0.00243420051726761,
+      "tpr": 0.012066952121448035
+    },
+    {
+      "model": "Logistic Regression",
+      "attribute": "derived_sex",
+      "group": "Sex Not Available",
+      "n": 2844,
+      "observed_denial": 0.19057665260196907,
+      "predicted_denial": 0.005977496483825597,
+      "fpr": 0.003909643788010426,
+      "tpr": 0.014760147601476014
+    },
+    {
+      "model": "Logistic Regression",
+      "attribute": "applicant_age",
+      "group": "25-34",
+      "n": 5596,
+      "observed_denial": 0.16190135811293782,
+      "predicted_denial": 0.001072194424588992,
+      "fpr": 0.0,
+      "tpr": 0.006622516556291391
+    },
+    {
+      "model": "Logistic Regression",
+      "attribute": "applicant_age",
+      "group": "35-44",
+      "n": 7387,
+      "observed_denial": 0.2207932855015568,
+      "predicted_denial": 0.0023013401922295927,
+      "fpr": 0.00034746351633078526,
+      "tpr": 0.009196811771919068
+    },
+    {
+      "model": "Logistic Regression",
+      "attribute": "applicant_age",
+      "group": "45-54",
+      "n": 6352,
+      "observed_denial": 0.24763853904282115,
+      "predicted_denial": 0.004880352644836272,
+      "fpr": 0.002301736765013601,
+      "tpr": 0.012714558169103624
+    },
+    {
+      "model": "Logistic Regression",
+      "attribute": "applicant_age",
+      "group": "55-64",
+      "n": 5330,
+      "observed_denial": 0.2579737335834897,
+      "predicted_denial": 0.00600375234521576,
+      "fpr": 0.0037926675094816687,
+      "tpr": 0.012363636363636363
+    },
+    {
+      "model": "Logistic Regression",
+      "attribute": "applicant_age",
+      "group": "65-74",
+      "n": 2923,
+      "observed_denial": 0.27471775573041396,
+      "predicted_denial": 0.009579199452617175,
+      "fpr": 0.006132075471698114,
+      "tpr": 0.0186799501867995
+    },
+    {
+      "model": "Logistic Regression",
+      "attribute": "applicant_age",
+      "group": "8888",
+      "n": 815,
+      "observed_denial": 0.08957055214723926,
+      "predicted_denial": 0.006134969325153374,
+      "fpr": 0.006738544474393531,
+      "tpr": 0.0
+    },
+    {
+      "model": "Logistic Regression",
+      "attribute": "applicant_age",
+      "group": "<25",
+      "n": 408,
+      "observed_denial": 0.16176470588235295,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Logistic Regression",
+      "attribute": "applicant_age",
+      "group": ">74",
+      "n": 1119,
+      "observed_denial": 0.3154602323503128,
+      "predicted_denial": 0.021447721179624665,
+      "fpr": 0.018276762402088774,
+      "tpr": 0.028328611898016998
+    },
+    {
+      "model": "Random Forest",
+      "attribute": "derived_race",
+      "group": "American Indian or Alaska Native",
+      "n": 120,
+      "observed_denial": 0.3416666666666667,
+      "predicted_denial": 0.15833333333333333,
+      "fpr": 0.06329113924050633,
+      "tpr": 0.34146341463414637
+    },
+    {
+      "model": "Random Forest",
+      "attribute": "derived_race",
+      "group": "Asian",
+      "n": 2074,
+      "observed_denial": 0.2107039537126326,
+      "predicted_denial": 0.05014464802314368,
+      "fpr": 0.009773976786805132,
+      "tpr": 0.20137299771167047
+    },
+    {
+      "model": "Random Forest",
+      "attribute": "derived_race",
+      "group": "Black or African American",
+      "n": 1873,
+      "observed_denial": 0.3758675920982381,
+      "predicted_denial": 0.08756006406833956,
+      "fpr": 0.023952095808383235,
+      "tpr": 0.19318181818181818
+    },
+    {
+      "model": "Random Forest",
+      "attribute": "derived_race",
+      "group": "Joint",
+      "n": 654,
+      "observed_denial": 0.18654434250764526,
+      "predicted_denial": 0.016819571865443424,
+      "fpr": 0.0037593984962406013,
+      "tpr": 0.07377049180327869
+    },
+    {
+      "model": "Random Forest",
+      "attribute": "derived_race",
+      "group": "Race Not Available",
+      "n": 5269,
+      "observed_denial": 0.2224330992598216,
+      "predicted_denial": 0.0491554374644145,
+      "fpr": 0.01586526726873322,
+      "tpr": 0.16552901023890784
+    },
+    {
+      "model": "Random Forest",
+      "attribute": "derived_race",
+      "group": "White",
+      "n": 19807,
+      "observed_denial": 0.21386378553036806,
+      "predicted_denial": 0.0653809259352754,
+      "fpr": 0.02478967311026909,
+      "tpr": 0.21458923512747877
+    },
+    {
+      "model": "Random Forest",
+      "attribute": "derived_sex",
+      "group": "Female",
+      "n": 6860,
+      "observed_denial": 0.2779883381924198,
+      "predicted_denial": 0.10801749271137026,
+      "fpr": 0.04300423985463356,
+      "tpr": 0.2768746722600944
+    },
+    {
+      "model": "Random Forest",
+      "attribute": "derived_sex",
+      "group": "Joint",
+      "n": 11084,
+      "observed_denial": 0.15896788163118009,
+      "predicted_denial": 0.02435943702634428,
+      "fpr": 0.009118214975327183,
+      "tpr": 0.10499432463110102
+    },
+    {
+      "model": "Random Forest",
+      "attribute": "derived_sex",
+      "group": "Male",
+      "n": 9142,
+      "observed_denial": 0.28101071975497705,
+      "predicted_denial": 0.08291402318967403,
+      "fpr": 0.02677620568994371,
+      "tpr": 0.22654729466718568
+    },
+    {
+      "model": "Random Forest",
+      "attribute": "derived_sex",
+      "group": "Sex Not Available",
+      "n": 2844,
+      "observed_denial": 0.19057665260196907,
+      "predicted_denial": 0.03727144866385373,
+      "fpr": 0.013032145960034752,
+      "tpr": 0.14022140221402213
+    },
+    {
+      "model": "Random Forest",
+      "attribute": "applicant_age",
+      "group": "25-34",
+      "n": 5596,
+      "observed_denial": 0.16190135811293782,
+      "predicted_denial": 0.024303073624017155,
+      "fpr": 0.004690831556503198,
+      "tpr": 0.12582781456953643
+    },
+    {
+      "model": "Random Forest",
+      "attribute": "applicant_age",
+      "group": "35-44",
+      "n": 7387,
+      "observed_denial": 0.2207932855015568,
+      "predicted_denial": 0.03898741031541898,
+      "fpr": 0.009728978457261988,
+      "tpr": 0.14224402207234826
+    },
+    {
+      "model": "Random Forest",
+      "attribute": "applicant_age",
+      "group": "45-54",
+      "n": 6352,
+      "observed_denial": 0.24763853904282115,
+      "predicted_denial": 0.057777078085642315,
+      "fpr": 0.016739903745553463,
+      "tpr": 0.182453909726637
+    },
+    {
+      "model": "Random Forest",
+      "attribute": "applicant_age",
+      "group": "55-64",
+      "n": 5330,
+      "observed_denial": 0.2579737335834897,
+      "predicted_denial": 0.08874296435272044,
+      "fpr": 0.03286978508217446,
+      "tpr": 0.24945454545454546
+    },
+    {
+      "model": "Random Forest",
+      "attribute": "applicant_age",
+      "group": "65-74",
+      "n": 2923,
+      "observed_denial": 0.27471775573041396,
+      "predicted_denial": 0.13308244953814574,
+      "fpr": 0.06273584905660377,
+      "tpr": 0.31880448318804483
+    },
+    {
+      "model": "Random Forest",
+      "attribute": "applicant_age",
+      "group": "8888",
+      "n": 815,
+      "observed_denial": 0.08957055214723926,
+      "predicted_denial": 0.0,
+      "fpr": 0.0,
+      "tpr": 0.0
+    },
+    {
+      "model": "Random Forest",
+      "attribute": "applicant_age",
+      "group": "<25",
+      "n": 408,
+      "observed_denial": 0.16176470588235295,
+      "predicted_denial": 0.022058823529411766,
+      "fpr": 0.005847953216374269,
+      "tpr": 0.10606060606060606
+    },
+    {
+      "model": "Random Forest",
+      "attribute": "applicant_age",
+      "group": ">74",
+      "n": 1119,
+      "observed_denial": 0.3154602323503128,
+      "predicted_denial": 0.1903485254691689,
+      "fpr": 0.10574412532637076,
+      "tpr": 0.37393767705382436
+    },
+    {
+      "model": "Gradient Boosting",
+      "attribute": "derived_race",
+      "group": "American Indian or Alaska Native",
+      "n": 120,
+      "observed_denial": 0.3416666666666667,
+      "predicted_denial": 0.175,
+      "fpr": 0.06329113924050633,
+      "tpr": 0.3902439024390244
+    },
+    {
+      "model": "Gradient Boosting",
+      "attribute": "derived_race",
+      "group": "Asian",
+      "n": 2074,
+      "observed_denial": 0.2107039537126326,
+      "predicted_denial": 0.06894889103182257,
+      "fpr": 0.015271838729383017,
+      "tpr": 0.2700228832951945
+    },
+    {
+      "model": "Gradient Boosting",
+      "attribute": "derived_race",
+      "group": "Black or African American",
+      "n": 1873,
+      "observed_denial": 0.3758675920982381,
+      "predicted_denial": 0.13187399893219434,
+      "fpr": 0.0427715996578272,
+      "tpr": 0.27982954545454547
+    },
+    {
+      "model": "Gradient Boosting",
+      "attribute": "derived_race",
+      "group": "Joint",
+      "n": 654,
+      "observed_denial": 0.18654434250764526,
+      "predicted_denial": 0.03669724770642202,
+      "fpr": 0.013157894736842105,
+      "tpr": 0.13934426229508196
+    },
+    {
+      "model": "Gradient Boosting",
+      "attribute": "derived_race",
+      "group": "Race Not Available",
+      "n": 5269,
+      "observed_denial": 0.2224330992598216,
+      "predicted_denial": 0.07268931486050484,
+      "fpr": 0.02294361728093727,
+      "tpr": 0.24658703071672355
+    },
+    {
+      "model": "Gradient Boosting",
+      "attribute": "derived_race",
+      "group": "White",
+      "n": 19807,
+      "observed_denial": 0.21386378553036806,
+      "predicted_denial": 0.09102842429444136,
+      "fpr": 0.03461563162288871,
+      "tpr": 0.2983947119924457
+    },
+    {
+      "model": "Gradient Boosting",
+      "attribute": "derived_sex",
+      "group": "Female",
+      "n": 6860,
+      "observed_denial": 0.2779883381924198,
+      "predicted_denial": 0.13848396501457727,
+      "fpr": 0.05592570159499293,
+      "tpr": 0.35291033036182484
+    },
+    {
+      "model": "Gradient Boosting",
+      "attribute": "derived_sex",
+      "group": "Joint",
+      "n": 11084,
+      "observed_denial": 0.15896788163118009,
+      "predicted_denial": 0.044839408155900394,
+      "fpr": 0.01705642565972967,
+      "tpr": 0.19182746878547105
+    },
+    {
+      "model": "Gradient Boosting",
+      "attribute": "derived_sex",
+      "group": "Male",
+      "n": 9142,
+      "observed_denial": 0.28101071975497705,
+      "predicted_denial": 0.11365127980748195,
+      "fpr": 0.036360870226684924,
+      "tpr": 0.31140521603736865
+    },
+    {
+      "model": "Gradient Boosting",
+      "attribute": "derived_sex",
+      "group": "Sex Not Available",
+      "n": 2844,
+      "observed_denial": 0.19057665260196907,
+      "predicted_denial": 0.058368495077355836,
+      "fpr": 0.021285838401390096,
+      "tpr": 0.2158671586715867
+    },
+    {
+      "model": "Gradient Boosting",
+      "attribute": "applicant_age",
+      "group": "25-34",
+      "n": 5596,
+      "observed_denial": 0.16190135811293782,
+      "predicted_denial": 0.03520371694067191,
+      "fpr": 0.005970149253731343,
+      "tpr": 0.18653421633554085
+    },
+    {
+      "model": "Gradient Boosting",
+      "attribute": "applicant_age",
+      "group": "35-44",
+      "n": 7387,
+      "observed_denial": 0.2207932855015568,
+      "predicted_denial": 0.06118857452281034,
+      "fpr": 0.015462126476719944,
+      "tpr": 0.22256284488044145
+    },
+    {
+      "model": "Gradient Boosting",
+      "attribute": "applicant_age",
+      "group": "45-54",
+      "n": 6352,
+      "observed_denial": 0.24763853904282115,
+      "predicted_denial": 0.08469773299748111,
+      "fpr": 0.023435865243774848,
+      "tpr": 0.2708200890019072
+    },
+    {
+      "model": "Gradient Boosting",
+      "attribute": "applicant_age",
+      "group": "55-64",
+      "n": 5330,
+      "observed_denial": 0.2579737335834897,
+      "predicted_denial": 0.12270168855534709,
+      "fpr": 0.050063211125158026,
+      "tpr": 0.3316363636363636
+    },
+    {
+      "model": "Gradient Boosting",
+      "attribute": "applicant_age",
+      "group": "65-74",
+      "n": 2923,
+      "observed_denial": 0.27471775573041396,
+      "predicted_denial": 0.17584673280875812,
+      "fpr": 0.09056603773584905,
+      "tpr": 0.40099626400996263
+    },
+    {
+      "model": "Gradient Boosting",
+      "attribute": "applicant_age",
+      "group": "8888",
+      "n": 815,
+      "observed_denial": 0.08957055214723926,
+      "predicted_denial": 0.001226993865030675,
+      "fpr": 0.0,
+      "tpr": 0.0136986301369863
+    },
+    {
+      "model": "Gradient Boosting",
+      "attribute": "applicant_age",
+      "group": "<25",
+      "n": 408,
+      "observed_denial": 0.16176470588235295,
+      "predicted_denial": 0.031862745098039214,
+      "fpr": 0.005847953216374269,
+      "tpr": 0.16666666666666666
+    },
+    {
+      "model": "Gradient Boosting",
+      "attribute": "applicant_age",
+      "group": ">74",
+      "n": 1119,
+      "observed_denial": 0.3154602323503128,
+      "predicted_denial": 0.2529043789097408,
+      "fpr": 0.13446475195822455,
+      "tpr": 0.509915014164306
+    }
+  ]
+}
